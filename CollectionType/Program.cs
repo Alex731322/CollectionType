@@ -175,21 +175,21 @@ namespace CollectionType
             while (bl)
             {
 
-                Console.WriteLine("ВВЕДТЕ ОПЕРАЦИЮ НАД КОЛЕКЦИЕЙ(Exit, Add, Remove, ReWrite, GetInfo, Serialize)");
+                Console.WriteLine("ENTER THE OPERATION OVER THE COLLECTION(Exit, Add, Remove, ReWrite, GetInfo, Serialize)");
                 str = Console.ReadLine();
                 switch (str)
                 {
                     case "Add":
                         {
 
-                            Console.WriteLine("ВВЕДИТЕ НОМЕР КОЛЛЕКЦИИ");
+                            Console.WriteLine("Enter numer of Collection");
                             int a = int.Parse(Console.ReadLine());
 
-                            if (a >= 0 && a <= 10)
+                            if (a >= 0 && a < 10)
                             {
                                 try
                                 {
-                                    Console.WriteLine("СОДЕРЖИМОЕ ОБЪЕКТА");
+                                    Console.WriteLine("CONTENT OF THE OBJECT");
                                     var obj = int.Parse(Console.ReadLine());
                                     cl[a].Add(obj);
                                 }
@@ -204,20 +204,20 @@ namespace CollectionType
                     case "Remove":
                         {
 
-                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            Console.WriteLine("Enter numer of Collection");
                             int a = int.Parse(Console.ReadLine());
-                            if (a >= 0 && a <= 10)
+                            if (a >= 0 && a < 10)
                             {
 
                                 try
                                 {
-                                    Console.WriteLine("ВВЕДИТЕ НОМЕР ОБЪЕКТА");
+                                    Console.WriteLine("ENTER OBJECT NUMBER");
                                     int b = int.Parse(Console.ReadLine());
                                     cl[a].Remove(b);
                                 }
                                 catch (FormatException ex)
                                 {
-                                    Console.WriteLine("Ошибка" + ex.Message);
+                                    Console.WriteLine("Error! " + ex.Message);
                                 }
                             }
                             break;
@@ -225,34 +225,34 @@ namespace CollectionType
                     case "GetInfo":
                         {
 
-                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            Console.WriteLine("Enter numer of Collection");
                             int a = int.Parse(Console.ReadLine());
-                            if (a >= 0 && a <= 10)
+                            if (a >= 0 && a < 10)
                             {
                                 try
                                 {
-                                    Console.WriteLine("ВВЕДИТЕ НОМЕР ОБЪЕКТА");
+                                    Console.WriteLine("ENTER OBJECT NUMBER");
                                     int b = int.Parse(Console.ReadLine());
                                     cl[a].GetInfo(b);
                                 }
                                 catch (FormatException ex)
                                 {
-                                    Console.WriteLine("Ошибка " + ex.Message);
+                                    Console.WriteLine("Error! " + ex.Message);
                                 }
                             }
                             break;
                         }
                     case "ReWrite":
                         {
-                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            Console.WriteLine("Enter numer of Collection");
                             int a = int.Parse(Console.ReadLine());
-                            if (a >= 0 && a <= 10)
+                            if (a >= 0 && a < 10)
                             {
                                 cl[a].ReWrite();
                             }
                             break;
                         }
-                    case "Serialize":
+                         case "Serialize":
                         {
                             Stream myStream = File.OpenWrite("kek.txt");
                             var ser = new BinaryFormatter();
@@ -264,14 +264,14 @@ namespace CollectionType
                             myStream.Close();
                             break;
                         }
-                    case "Exit":
+                         case "Exit":
                         {
                             bl = false;
 
                             break;
                         }
-                    default:
-                        Console.WriteLine("default");
+                         default:
+                        Console.WriteLine("Incorrect input");
                         break;
 
                 }
@@ -332,7 +332,7 @@ namespace CollectionType
                     foreach (var a in ls2)
                         sw.WriteLine(a);
                 }
-                Console.WriteLine("Запись выполнена");
+                Console.WriteLine("Recording Complete");
             }
             catch (Exception e)
             {
