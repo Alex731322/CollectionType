@@ -2,28 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+
 namespace CollectionType
 {
 
-  
-    class CollectionType<T>   
+    [Serializable]
+    class CollectionType<T>
     {
-        static T[] userList;
+        T[] userList;
         int count;
+        T nullik;
+        public int Count { get; set; }
+        public T this[int index]
+        {
+            set
+            {
 
-        public  int Count { get; set; }
+                if (index >= count)
+                {
+                    Array.Resize(ref userList, index + 2);
+                    count = index + 1;
+                }
+                userList[index] = value;
+            }
+            get
+            {
+                if (index >= count)
+                {
+                    return nullik;
+                }
+                return userList[index];
+            }
+        }
 
 
         public CollectionType()
         {
+
             count = 0;
             userList = new T[count + 1];
-            
+
         }
 
-        ~CollectionType() {  }
+        ~CollectionType() { }
 
-        public  void  Add(T obj)
+        public void Add(T obj)
         {
             userList[count] = obj;
             count++;
@@ -33,21 +60,20 @@ namespace CollectionType
 
         public void Remove(int number)
         {
-           
 
             if (number < count && number >= 0)
             {
-                for(int i = number ; i < count; i++)
+                for (int i = number; i < count; i++)
                 {
-                    userList[i] = userList[i+1];
+                    userList[i] = userList[i + 1];
                 }
                 count--;
             }
 
         }
 
-            public T GetInfo(int number)
-            {
+        public T GetInfo(int number)
+        {
             T obj;
             var val = default(T);
 
@@ -58,22 +84,22 @@ namespace CollectionType
             }
 
             return val;
-            }
+        }
 
-        public  void ReWrite()
+        public void ReWrite()
         {
             for (int i = 0; i < count; i++)
-                Console.WriteLine("Value: " + userList[i]  );
+                Console.WriteLine("Value: " + userList[i]);
             Console.WriteLine();
         }
-      
-        public int SizeOfCollection( )
+
+        public int SizeOfCollection()
         {
             return count;
         }
 
     }
-  
+
     class GeometryShape : IComparable<GeometryShape>
     {
         public string GeomName { set; get; }
@@ -90,7 +116,7 @@ namespace CollectionType
             this.ID = ID;
         }
 
-        
+
         public int CompareTo(GeometryShape obj)
         {
 
@@ -114,38 +140,144 @@ namespace CollectionType
         static void Main(string[] args)
         {
             CollectionType<int>[] cl = new CollectionType<int>[10];
-   
-
-             for (int i = 0; i < 10; i++)  
-                cl[i] = new CollectionType<int>();
-
-            cl[1].Add(1);
-            cl[1].Add(2);
-            cl[1].Add(3);
-
-
-            cl[2].Add(1);
-            cl[2].Add(2);
-            cl[2].Add(3);
-
-            cl[3].Add(1);
-            cl[3].Add(2);
-
-            cl[4].Add(1);
-
-
-            cl[1].ReWrite();
-            cl[2].ReWrite();
-            cl[3].ReWrite();
-            cl[4].ReWrite();
-
-
-            int count  = 3;
+            int count = 3;
             int sumCount = 0;
             int max = -1;
             int min = 11;
-            
+
+
+            for (int i = 0; i < 10; i++)
+                cl[i] = new CollectionType<int>();
+
+
+            try
+            {
+                Stream myStream1 = File.OpenRead("kek.txt");
+                var ser1 = new BinaryFormatter();
+
+                for (int i = 0; i < cl.Length; i++)
+                {
+
+                    cl[i] = ser1.Deserialize(myStream1) as CollectionType<int>;
+                }
+                myStream1.Close();
+            }catch(IOException ex )
+            {
+                Console.WriteLine(ex.Message);
+            }
             Console.WriteLine();
+
+            int k = cl[0][4];
+            //cl[0].ReWrite();
+
+            string str;
+            bool bl = true;
+            while (bl)
+            {
+
+                Console.WriteLine("ВВЕДТЕ ОПЕРАЦИЮ НАД КОЛЕКЦИЕЙ(Exit, Add, Remove, ReWrite, GetInfo, Serialize)");
+                str = Console.ReadLine();
+                switch (str)
+                {
+                    case "Add":
+                        {
+
+                            Console.WriteLine("ВВЕДИТЕ НОМЕР КОЛЛЕКЦИИ");
+                            int a = int.Parse(Console.ReadLine());
+
+                            if (a >= 0 && a <= 10)
+                            {
+                                try
+                                {
+                                    Console.WriteLine("СОДЕРЖИМОЕ ОБЪЕКТА");
+                                    var obj = int.Parse(Console.ReadLine());
+                                    cl[a].Add(obj);
+                                }
+                                catch (FormatException ex)
+                                {
+                                    Console.WriteLine("Ошибка" + ex.Message);
+                                }
+                            }
+
+                            break;
+                        }
+                    case "Remove":
+                        {
+
+                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            int a = int.Parse(Console.ReadLine());
+                            if (a >= 0 && a <= 10)
+                            {
+
+                                try
+                                {
+                                    Console.WriteLine("ВВЕДИТЕ НОМЕР ОБЪЕКТА");
+                                    int b = int.Parse(Console.ReadLine());
+                                    cl[a].Remove(b);
+                                }
+                                catch (FormatException ex)
+                                {
+                                    Console.WriteLine("Ошибка" + ex.Message);
+                                }
+                            }
+                            break;
+                        }
+                    case "GetInfo":
+                        {
+
+                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            int a = int.Parse(Console.ReadLine());
+                            if (a >= 0 && a <= 10)
+                            {
+                                try
+                                {
+                                    Console.WriteLine("ВВЕДИТЕ НОМЕР ОБЪЕКТА");
+                                    int b = int.Parse(Console.ReadLine());
+                                    cl[a].GetInfo(b);
+                                }
+                                catch (FormatException ex)
+                                {
+                                    Console.WriteLine("Ошибка " + ex.Message);
+                                }
+                            }
+                            break;
+                        }
+                    case "ReWrite":
+                        {
+                            Console.WriteLine("ВВЕДИТЕ НОМЕР Коллекции");
+                            int a = int.Parse(Console.ReadLine());
+                            if (a >= 0 && a <= 10)
+                            {
+                                cl[a].ReWrite();
+                            }
+                            break;
+                        }
+                    case "Serialize":
+                        {
+                            Stream myStream = File.OpenWrite("kek.txt");
+                            var ser = new BinaryFormatter();
+
+                            for (int i = 0; i < cl.Length; i++)
+                            {
+                                ser.Serialize(myStream, cl[i]);
+                            }
+                            myStream.Close();
+                            break;
+                        }
+                    case "Exit":
+                        {
+                            bl = false;
+
+                            break;
+                        }
+                    default:
+                        Console.WriteLine("default");
+                        break;
+
+                }
+            }
+
+
 
             foreach (var v in cl)
             {
@@ -153,6 +285,7 @@ namespace CollectionType
                 if (v.SizeOfCollection() == count)
                     sumCount++;
             }
+
             Console.WriteLine();
             Console.WriteLine("sumcount " + sumCount);
             Console.WriteLine();
@@ -162,6 +295,7 @@ namespace CollectionType
                 if (cl[i].SizeOfCollection() >= max)
                     max = cl[i].SizeOfCollection();
             }
+
             Console.WriteLine("Max size of Collection: " + max);
 
             for (int i = 0; i < 10; i++)
@@ -169,9 +303,11 @@ namespace CollectionType
                 if (cl[i].SizeOfCollection() <= min)
                     min = cl[i].SizeOfCollection();
             }
+
             Console.WriteLine("Min size of Collection: " + min);
 
             Console.WriteLine();
+
 
             List<GeometryShape> ls = new List<GeometryShape>();
             List<GeometryShape> ls2 = new List<GeometryShape>();
@@ -179,47 +315,43 @@ namespace CollectionType
             ls.Add(new GeometryShape("Kvadrat", 20, 20, 1));
             ls.Add(new GeometryShape("Pri1", 30, 40, 2));
             ls.Add(new GeometryShape("Pri22", 80, 40, 3));
-           
+
 
             ls2.Add(new GeometryShape("Pri5", 90, 40, 6));
             ls2.Add(new GeometryShape("Pri63", 60, 40, 7));
-          
+
             string writePath = @"C:\users\Sanya\hta.txt";
-       
+
             try
             {
                 using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
                 {
                     foreach (var a in ls)
                         sw.WriteLine(a);
-                  
+
                     foreach (var a in ls2)
                         sw.WriteLine(a);
                 }
-
-          
                 Console.WriteLine("Запись выполнена");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            
-            var lk = ls.Where(p => p.ID >= 1).OrderBy(p => p.X).Select(p => "*" + p.GeomName + "*");
 
+            var lk = ls.Where(p => p.ID >= 1).OrderBy(p => p.X).Select(p => "*" + p.GeomName + "*");
             foreach (var a in lk)
                 Console.WriteLine(a);
 
             var lk2 = ls.Where(p => p.ID >= 2).Select(p => ++p.ID).Max();
             Console.WriteLine(lk2);
 
-            var lk1 = ls.Any(p => p.X <= 20);
-            Console.WriteLine(lk1);
-
-            
+            var lk3 = ls.OrderBy(P => P.Y).Take(2).Min();
+            Console.WriteLine(lk3);
 
         }
 
 
     }
 }
+
